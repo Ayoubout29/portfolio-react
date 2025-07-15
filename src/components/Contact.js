@@ -29,16 +29,28 @@ function Contact() {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length === 0) {
+      // 📨 Envoi à toi (le propriétaire)
       emailjs.send(
         'service_m11b1xb',
-        'template_1lp06mr',
+        'template_d1c7yz8', // <-- le template qui t'envoie à toi
         formData,
         'FQfFDzKLVLledvVKU'
       ).then(() => {
-        setSubmitted(true);
-        setFormData({ name: '', email: '', message: '' });
+        // ✅ Ensuite, envoi l'auto-réponse à l'utilisateur
+        emailjs.send(
+          'service_m11b1xb',
+          'template_1lp06mr', // <-- le template qui envoie au visiteur
+          formData,
+          'FQfFDzKLVLledvVKU'
+        ).then(() => {
+          setSubmitted(true);
+          setFormData({ name: '', email: '', message: '' });
+        }).catch((error) => {
+          alert("Erreur lors de l'envoi de l'accusé de réception.");
+          console.error(error);
+        });
       }).catch((error) => {
-        alert('Erreur lors de l’envoi, merci de réessayer.');
+        alert("Erreur lors de l'envoi du message.");
         console.error(error);
       });
     } else {
@@ -96,7 +108,7 @@ function Contact() {
         <p>
           <FaLinkedin />{' '}
           <a href="https://www.linkedin.com/in/ayoub-outahar-0a8870293/" target="_blank" rel="noreferrer">
-            https://www.linkedin.com/in/ayoub-outahar-0a8870293/
+            Mon profil LinkedIn
           </a>
         </p>
       </div>
